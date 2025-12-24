@@ -1,12 +1,13 @@
-import type {ICountries} from '../../types';
 import * as React from 'react';
 import CountriesItem from './CountriesItem/CountriesItem.tsx';
+import type {ICountriesAPI} from '../../types';
 
 interface Props {
-    countries: ICountries[];
+    countries: ICountriesAPI[];
+    onSelectShowInfoCountry: (id: string) => void;
 }
 
-const CountriesList: React.FC<Props> = ({countries}) => {
+const CountriesList: React.FC<Props> = ({countries, onSelectShowInfoCountry}) => {
     return (
         <div className="col-4 border-end p-2">
             <ul
@@ -14,7 +15,12 @@ const CountriesList: React.FC<Props> = ({countries}) => {
                 style={{ height: '700px', overflow: 'auto' }}
             >
                 {countries.map((country) => (
-                    <CountriesItem key={country.alpha3Code} className='list-group-item list-group-item-action' text={country.name} />
+                    <CountriesItem
+                        key={country.alpha3Code}
+                        className='list-group-item list-group-item-action'
+                        text={country.name}
+                        onSelectShowInfoCountry={() => onSelectShowInfoCountry(country.alpha3Code)}
+                    />
                 ))}
             </ul>
         </div>
