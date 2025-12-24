@@ -1,1 +1,4 @@
-
+.countries-list .list-group-item-action:hover {
+    color: white;
+    cursor: pointer;
+}
