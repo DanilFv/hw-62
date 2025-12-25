@@ -2,23 +2,27 @@ import type {IBorder} from '../../../types';
 import React from 'react';
 
 interface Props {
-    borders: IBorder[];
+    borders: IBorder[] | null;
 }
 
 const CountryBorders: React.FC<Props> = ({borders}) => {
+    if (borders === null) {
+        return null;
+    }
+
+    if (borders.length === 0) {
+        return <p>No Borders</p>;
+    }
     return (
         <>
-            {borders.length === 0 && <h2>No Borders</h2>}
-            {borders.length > 0 && (
-                <div>
-                    <h6>Borders with:</h6>
-                    <ul>
-                        {borders.map((border: IBorder) => (
-                            <li>{border.name}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            <div>
+                <h6>Borders with:</h6>
+                <ul>
+                    {borders.map((border: IBorder) => (
+                        <li key={border.alpha3Code}>{border.name}</li>
+                    ))}
+                </ul>
+            </div>
         </>
     )
 };

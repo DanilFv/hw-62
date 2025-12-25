@@ -1,9 +1,9 @@
 import * as React from 'react';
 import CountriesItem from './CountriesItem/CountriesItem.tsx';
-import type {ICountriesAPI} from '../../types';
+import type {IBorder} from '../../types';
 
 interface Props {
-    countries: ICountriesAPI[];
+    countries: IBorder[];
     onSelectShowInfoCountry: (id: string) => void;
 }
 
