@@ -1,26 +1,26 @@
 import {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
-import type {ICountries, ICountriesAPI} from './types';
 import CountriesList from './components/CountriesList/CountriesList.tsx';
 import './App.css';
 import Spinner from './components/UI/Spinner/Spinner.tsx';
+import CountryInfoBlock
+  from './components/CountryInfoBlock/CountryInfoBlock.tsx';
+import type {IBorder} from './types';
 
 const App = () => {
-  const [countries, setCountries] = useState<ICountries[]>([]);
+  const [countries, setCountries] = useState<IBorder[]>([]);
   const [countryId, setCountryId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log(countryId);
+  console.log(countries);
 
-  const BASE_URL = 'https://restcountries.com/v2/';
-  const COUNTRIES_URL = 'all?fields=alpha3Code,name';
-  const ALPHA_URL = 'https://restcountries.com/v2/alpha/';
+  const URL = 'https://restcountries.com/v2/all?fields=alpha3Code,name';
 
 
   const axiosData = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const response = await axios<ICountriesAPI[]>(BASE_URL + COUNTRIES_URL);
+      const response = await axios<IBorder[]>(URL);
       const AllCountries = response.data;
       setCountries(AllCountries);
 
@@ -43,6 +43,7 @@ const App = () => {
            {isLoading && <Spinner />}
           <div className="row border bg-white">
             <CountriesList countries={countries} onSelectShowInfoCountry={setCountryId} />
+            <CountryInfoBlock id={countryId} />
           </div>
         </div>
       </>

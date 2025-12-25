@@ -1,18 +1,37 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import axios from 'axios';
+import type {IBorder, IInfoCountryAPI} from '../../types';
 
 interface Props {
     id: string | null;
 }
 
 const CountryInfoBlock: React.FC<Props> = ({id}) => {
-    const [country, setCountry] = useState([]);
-    console.log(country);
+    const [country, setCountry] = useState<IInfoCountryAPI | null>(null);
+    const [borders, setBorders] = useState<IBorder[]>([]);
 
     const fetchData = useCallback(async () => {
-        const response = await axios('https://restcountries.com/v2/all?fields=alpha3Code,name' + id);
-        const countryInfo = response.data;
-        setCountry(countryInfo);
+        if (!id) return;
+
+        const response = await axios<IInfoCountryAPI>(`https://restcountries.com/v2/alpha/${id}`);
+        const countryData = response.data;
+        setCountry(countryData);
+
+        if(countryData.borders?.length === 0) {
+            setBorders([]);
+            return;
+        }
+
+        const bordersRequest = countryData.borders.map(async c => {
+            const border = await axios<IBorder>(`https://restcountries.com/v2/alpha/${c}`);
+            return {
+                name: border.data.name,
+                alpha3Code: border.data.alpha3Code,
+            }
+        });
+
+        const countryBorders = await Promise.all(bordersRequest);
+        setBorders(countryBorders);
     },[id])
 
     useEffect(() => {
@@ -22,29 +41,7 @@ const CountryInfoBlock: React.FC<Props> = ({id}) => {
 
     return (
         <div className="col-8 p-3">
-              <div className="d-flex justify-content-between align-items-start">
-                <div>
-                  <h3>Argentina</h3>
-                  <p className="mb-1"><strong>Capital:</strong> Buenos Aires</p>
-                  <p className="mb-3"><strong>Population:</strong> 44 M</p>
-                </div>
 
-
-                <img
-                    src="https://flagcdn.com/w80/ar.png"
-                    alt="Argentina flag"
-                    className="border"
-                />
-              </div>
-
-              <h6>Borders with:</h6>
-              <ul>
-                <li>Bolivia (Plurinational State of)</li>
-                <li>Brazil</li>
-                <li>Chile</li>
-                <li>Paraguay</li>
-                <li>Uruguay</li>
-              </ul>
         </div>
     );
 };
